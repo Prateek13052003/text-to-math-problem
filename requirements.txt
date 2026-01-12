@@ -3,7 +3,10 @@ python-dotenv
 ipykernel
 langchain-community
 pypdf
+streamlit
 bs4
+streamlit
+langchain-core
 arxiv
 pymupdf
 wikipedia
