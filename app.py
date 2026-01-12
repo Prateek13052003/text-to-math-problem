@@ -1,6 +1,5 @@
 import streamlit as st
 from langchain_groq import ChatGroq
-from langchain.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.utilities import WikipediaAPIWrapper
 from langchain.agents.agent_types import AgentType
