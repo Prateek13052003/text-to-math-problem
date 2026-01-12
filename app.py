@@ -1,6 +1,5 @@
 import streamlit as st
 from langchain_groq import ChatGroq
-from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.utilities import WikipediaAPIWrapper
@@ -23,7 +22,7 @@ if not groq_api_key:
     st.info("Please add your GROQ API key to continue")
     st.stop()
 
-# ---------------- LLM (UNCHANGED) ----------------
+# ---------------- LLM ----------------
 llm = ChatGroq(
     model_name="llama-3.3-70b-versatile",
     groq_api_key=groq_api_key
@@ -31,7 +30,7 @@ llm = ChatGroq(
 
 # ---------------- TOOLS ----------------
 
-# Wikipedia tool (UNCHANGED)
+# Wikipedia Tool
 wikipedia_wrapper = WikipediaAPIWrapper()
 wikipedia_tool = Tool(
     name="Wikipedia",
@@ -39,7 +38,7 @@ wikipedia_tool = Tool(
     description="Search Wikipedia for factual information"
 )
 
-# ✅ SAFE Calculator (FIX)
+# Safe Calculator Tool
 def safe_calculator(expression: str) -> str:
     try:
         return str(eval(expression, {"__builtins__": {}}))
@@ -49,13 +48,10 @@ def safe_calculator(expression: str) -> str:
 calculator = Tool(
     name="Calculator",
     func=safe_calculator,
-    description=(
-        "Use ONLY for pure mathematical expressions like "
-        "'5 + 3 * 2'. Do NOT use for word problems."
-    )
+    description="Use ONLY for pure mathematical expressions like '5 + 3 * 2'"
 )
 
-# Reasoning tool (UNCHANGED)
+# ---------------- REASONING TOOL (LCEL FIX) ----------------
 prompt = PromptTemplate(
     input_variables=["question"],
     template="""
@@ -68,15 +64,15 @@ Answer:
 """
 )
 
-reasoning_chain = LLMChain(llm=llm, prompt=prompt)
+reasoning_chain = prompt | llm | StrOutputParser()
 
 reasoning_tool = Tool(
     name="Reasoning",
-    func=reasoning_chain.run,
+    func=lambda q: reasoning_chain.invoke({"question": q}),
     description="Solve logical and reasoning-based questions"
 )
 
-# ---------------- AGENT (UNCHANGED) ----------------
+# ---------------- AGENT ----------------
 assistant_agent = initialize_agent(
     tools=[wikipedia_tool, calculator, reasoning_tool],
     llm=llm,
@@ -120,6 +116,5 @@ if st.button("Find my answer"):
         )
 
         st.chat_message("assistant").write(final_answer)
-
     else:
         st.warning("Please enter a question")
