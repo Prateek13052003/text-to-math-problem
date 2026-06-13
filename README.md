@@ -5,7 +5,7 @@ A Python-based application that converts natural language mathematical problems 
 
 The Text-to-Math Problem Solver is designed to help users solve mathematical problems written in plain English. The application interprets user input, extracts mathematical information, converts it into mathematical expressions, and computes the final answer.
 
-This project demonstrates the integration of Natural Language Processing (NLP), mathematical reasoning, and algorithmic problem-solving techniques to automate the process of solving text-based math questions.
+This project demonstrates the integration of Natural Language Processing (NLP), mathematical reasoning, and algorithmic problem-solving techniques to automate the process of solving text math based questions.
 
 ---
 
